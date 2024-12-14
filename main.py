@@ -68,7 +68,7 @@ def main():
     app.add_handler(CommandHandler("users", users))
 
     logger.info("Bot started...")
-    app.run_polling(port=PORT)  # Use the platform's PORT or default to 8080
+    app.run_polling()  # No need to specify the port here
 
 if __name__ == "__main__":
     main()

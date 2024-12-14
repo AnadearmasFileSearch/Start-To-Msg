@@ -1,5 +1,6 @@
 import os
 import logging
+import requests
 from pymongo import MongoClient
 from telegram import Update
 from telegram.ext import (
@@ -7,10 +8,10 @@ from telegram.ext import (
 )
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+# Load environment variables from .env
 load_dotenv()
 
-# Load bot token, MongoDB URL, and admin ID from environment
+# Load bot token, MongoDB URL, and admin ID from environment variables
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 MONGO_URL = os.getenv("MONGO_URL")
 ADMIN_ID = int(os.getenv("ADMIN_ID"))
@@ -19,20 +20,19 @@ ADMIN_ID = int(os.getenv("ADMIN_ID"))
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Ensure the environment variables are loaded
-if not BOT_TOKEN or not MONGO_URL or not ADMIN_ID:
-    logger.error("Missing required environment variables: BOT_TOKEN, MONGO_URL, or ADMIN_ID.")
-    exit(1)
+# Disable any active webhook
+def disable_webhook():
+    url = f'https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook'
+    response = requests.get(url)
+    if response.json().get("ok"):
+        logger.info("Webhook disabled successfully.")
+    else:
+        logger.warning("Failed to disable webhook.")
 
 # Connect to MongoDB
-try:
-    client = MongoClient(MONGO_URL)
-    db = client['telegram_bot']
-    users_collection = db['users']
-    logger.info("MongoDB connection established.")
-except Exception as e:
-    logger.error(f"Failed to connect to MongoDB: {e}")
-    exit(1)
+client = MongoClient(MONGO_URL)
+db = client['telegram_bot']
+users_collection = db['users']
 
 # Command: /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -79,6 +79,9 @@ async def users(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Main function
 def main():
+    # Disable webhook before starting polling
+    disable_webhook()
+
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
     # Register command handlers

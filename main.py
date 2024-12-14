@@ -1,3 +1,4 @@
+# main.py
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
 from config import BOT_TOKEN
 from handlers import start, forward_message_to_admin, reply_to_user
@@ -8,14 +9,8 @@ def main():
 
     # Register command handlers
     app.add_handler(CommandHandler("start", start))
-    
-    # Forward all text messages to admin (only for users)
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, forward_message_to_admin))
-
-    # Admin replies to the forwarded messages
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, reply_to_user))
-
-    # Admin-only commands
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, reply_to_user))  # Allows admin to reply to users
     app.add_handler(CommandHandler("broadcast", broadcast))
     app.add_handler(CommandHandler("users", users))
 

@@ -1,7 +1,7 @@
 import os
 import logging
 from telegram import Bot, Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, filters, Dispatcher
+from telegram.ext import CommandHandler, MessageHandler, filters, Application
 from config import BOT_TOKEN, ADMIN_ID, WEBHOOK_URL
 from handlers import start, forward_message_to_admin, reply_to_user, broadcast, users  # Import your handlers
 
@@ -13,16 +13,15 @@ logger = logging.getLogger(__name__)
 # Initialize the bot
 bot = Bot(token=BOT_TOKEN)
 
-# Initialize the Updater and Dispatcher
-updater = Updater(token=BOT_TOKEN, use_context=True)
-dispatcher = updater.dispatcher
+# Initialize the Application object (v20.x)
+application = Application.builder().token(BOT_TOKEN).build()
 
 # Register command and message handlers
-dispatcher.add_handler(CommandHandler("start", start))
-dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, forward_message_to_admin))
-dispatcher.add_handler(CommandHandler("broadcast", broadcast))
-dispatcher.add_handler(CommandHandler("users", users))
-dispatcher.add_handler(MessageHandler(Filters.text & Filters.private, reply_to_user))
+application.add_handler(CommandHandler("start", start))
+application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, forward_message_to_admin))
+application.add_handler(CommandHandler("broadcast", broadcast))
+application.add_handler(CommandHandler("users", users))
+application.add_handler(MessageHandler(filters.TEXT & filters.Private, reply_to_user))
 
 # This function sets the webhook for Telegram updates
 def set_webhook():
@@ -33,9 +32,9 @@ def set_webhook():
 # This function will process incoming webhook requests
 def process_update(request):
     update = Update.de_json(request.get_json(force=True), bot)
-    dispatcher.process_update(update)
+    application.process_update(update)
 
-# The function to handle the webhook callback
+# The function to handle the webhook callback (without Flask)
 def webhook(request):
     try:
         process_update(request)
@@ -48,6 +47,6 @@ if __name__ == '__main__':
     # Register webhook
     set_webhook()
 
-    # Start webhook handling (this requires your server to be accessible via the public URL)
+    # Start webhook handling (using werkzeug or any suitable server)
     from werkzeug.serving import run_simple
     run_simple('0.0.0.0', 5000, webhook)

@@ -20,18 +20,13 @@ A simple Telegram bot for broadcasting messages and managing users. Built with P
    git clone https://github.com/YOUR_USERNAME/Start-To-Msg.git
    cd Start-To-Msg
 
-2. Install dependencies:
-
-pip install -r requirements.txt
+2. Install dependencies: pip install -r requirements.txt
 
 
 3. Add your bot token and MongoDB URL in config.py.
 
 
-4. Run the bot:
-
-python main.py
-
+4. Run the bot: python main.py
 
 
 Deployment

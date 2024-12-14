@@ -5,18 +5,34 @@ from telegram import Update
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, ContextTypes
 )
+from dotenv import load_dotenv
 
-# Load bot token and MongoDB URL from config
-from config import BOT_TOKEN, MONGO_URL, ADMIN_ID
+# Load environment variables from .env file
+load_dotenv()
+
+# Load bot token, MongoDB URL, and admin ID from environment
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+MONGO_URL = os.getenv("MONGO_URL")
+ADMIN_ID = int(os.getenv("ADMIN_ID"))
 
 # Logging setup
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Ensure the environment variables are loaded
+if not BOT_TOKEN or not MONGO_URL or not ADMIN_ID:
+    logger.error("Missing required environment variables: BOT_TOKEN, MONGO_URL, or ADMIN_ID.")
+    exit(1)
+
 # Connect to MongoDB
-client = MongoClient(MONGO_URL)
-db = client['telegram_bot']
-users_collection = db['users']
+try:
+    client = MongoClient(MONGO_URL)
+    db = client['telegram_bot']
+    users_collection = db['users']
+    logger.info("MongoDB connection established.")
+except Exception as e:
+    logger.error(f"Failed to connect to MongoDB: {e}")
+    exit(1)
 
 # Command: /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):

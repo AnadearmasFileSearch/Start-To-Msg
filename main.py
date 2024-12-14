@@ -1,3 +1,4 @@
+import os  # Add this import
 import logging
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ChatMemberHandler
 from config import BOT_TOKEN
@@ -30,7 +31,7 @@ def main():
         listen='0.0.0.0',
         port=int(os.getenv('PORT', '8443')),
         url_path=BOT_TOKEN,
-        webhook_url=f'https://start-to-msg.onrender.com/7524278392:AAHpaKS1CeI-cpn-SIwN_L4_VlW_VpNEUfU'
+        webhook_url=f'https://your-app-name.onrender.com/{BOT_TOKEN}'
     )
 
 async def error_handler(update, context):

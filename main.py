@@ -61,10 +61,12 @@ async def forward_message_to_admin(update: Update, context: ContextTypes.DEFAULT
 # Replying to the user's message from the admin
 async def reply_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != int(ADMIN_ID):
+        print(f"Unauthorized reply attempt by user {update.effective_user.id}")  # Debug: Unauthorized reply attempt
         return  # Only allow admin to reply
 
     # Check if the admin is replying to a forwarded message
     if 'forwarded_message_id' not in context.user_data:
+        print("No forwarded message to reply to.")  # Debug: No forwarded message
         return  # No forwarded message to reply to
 
     reply_message = update.message.text

@@ -1,14 +1,15 @@
+import logging
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ChatMemberHandler
 from config import BOT_TOKEN
 from handlers import start, forward_message_to_admin, reply_to_user
 from handlers import broadcast, users, handle_user_blocked_or_deleted
-import logging
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def main():
+    # Create the application
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
     # Register command handlers
@@ -24,7 +25,13 @@ def main():
     # Add an error handler
     app.add_error_handler(error_handler)
 
-    app.run_polling()
+    # Set up the webhook
+    app.run_webhook(
+        listen='0.0.0.0',
+        port=int(os.getenv('PORT', '8443')),
+        url_path=BOT_TOKEN,
+        webhook_url=f'https://start-to-msg.onrender.com/7524278392:AAHpaKS1CeI-cpn-SIwN_L4_VlW_VpNEUfU'
+    )
 
 async def error_handler(update, context):
     logger.error(msg="Exception while handling an update:", exc_info=context.error)

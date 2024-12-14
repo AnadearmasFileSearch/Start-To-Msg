@@ -1,9 +1,13 @@
-# handlers.py
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 from config import ADMIN_ID
 from utils import delete_message, delete_reply
 from datetime import timedelta
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Command: /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -55,13 +59,16 @@ async def reply_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reply_message = update.message.text
     user_chat_id = context.user_data['user_chat_id']
 
-    sent_reply = await context.bot.send_message(
-        chat_id=user_chat_id,
-        text=f"Reply from admin: {reply_message}"
-    )
+    try:
+        sent_reply = await context.bot.send_message(
+            chat_id=user_chat_id,
+            text=f"Reply from admin: {reply_message}"
+        )
 
-    # Schedule the deletion of the reply message after 2 hours
-    context.job_queue.run_once(delete_reply, timedelta(hours=2), context=sent_reply)
+        # Schedule the deletion of the reply message after 2 hours
+        context.job_queue.run_once(delete_reply, timedelta(hours=2), context=sent_reply)
+    except Exception as e:
+        logger.error(f"Failed to send reply to {user_chat_id}: {e}")
 
 # Command: /broadcast (Admin only)
 async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -80,7 +87,7 @@ async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             await context.bot.send_message(chat_id=user['user_id'], text=message)
         except Exception as e:
-            print(f"Failed to send to {user['user_id']}: {e}")
+            logger.error(f"Failed to send to {user['user_id']}: {e}")
 
     await update.message.reply_text("Broadcast completed!")
 
@@ -93,15 +100,14 @@ async def users(update: Update, context: ContextTypes.DEFAULT_TYPE):
     count = 0  # Replace with your user count logic
     await update.message.reply_text(f"Total users: {count}")
 
-# Notify Admin if User Blocks or Deletes the Bot
-async def notify_admin_user_blocked(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_name = update.my_chat_member.from_user.full_name
-    user_id = update.my_chat_member.from_user.id
-    status = update.my_chat_member.new_chat_member.status
-
-    if status in ["kicked", "left"]:
-        notification_message = f"User {user_name} (ID: {user_id}) has blocked or deleted the bot."
-        await context.bot.send_message(
-            chat_id=ADMIN_ID,
-            text=notification_message,
-    )
+# Notify admin if the user blocks or deletes the bot
+async def handle_user_blocked_or_deleted(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.message:
+        try:
+            # If a user blocks the bot or the bot gets deleted, it won't be able to send messages
+            await context.bot.send_message(
+                chat_id=ADMIN_ID,
+                text=f"User {update.message.from_user.full_name} (ID: {update.message.from_user.id}) has either deleted or blocked the bot."
+            )
+        except Exception as e:
+            logger.error(f"Error notifying admin about user blocking/deleting: {e}")

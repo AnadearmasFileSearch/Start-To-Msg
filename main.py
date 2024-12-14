@@ -20,7 +20,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f"Received /start command from chat {chat_id}")  # Debug: Print chat ID
 
     # Define the image URL or file path
-    image_url = "https://i.ibb.co/BZkwHP7/photo-2024-12-13-08-36-29-7448177433972310020.jpg"  # Replace with your image URL
+    image_url = "https://i.ibb.co/SB9XZ6Z/photo-2024-12-14-08-27-56-7448181445471764512.jpg"  # Replace with your image URL
 
     # Create inline buttons
     keyboard = [

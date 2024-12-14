@@ -19,13 +19,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
 
     # Define the image URL or file path
-    image_url = "https://example.com/path/to/your/image.jpg"  # Replace with your image URL
+    image_url = "https://i.ibb.co/BZkwHP7/photo-2024-12-13-08-36-29-7448177433972310020.jpg"  # Replace with your image URL
 
     # Create inline buttons
     keyboard = [
-        [InlineKeyboardButton("Join Our Main Channel", url="https://t.me/YourChannelLink")],
-        [InlineKeyboardButton("Join Our Group", url="https://t.me/YourGroupLink")],
-        [InlineKeyboardButton("Movie Link", url="https://t.me/YourMovieLink")]
+        [InlineKeyboardButton("Join Our Main Channel", url="https://t.me/FilesUlagam1")],
+        [InlineKeyboardButton("Join Our Group", url="https://t.me/+xR-e38apt6AxMmY1")],
+        [InlineKeyboardButton("Movie Link", url="https://t.me/FilesUlagam1")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 

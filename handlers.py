@@ -104,4 +104,4 @@ async def notify_admin_user_blocked(update: Update, context: ContextTypes.DEFAUL
         await context.bot.send_message(
             chat_id=ADMIN_ID,
             text=notification_message,
-        )
+    )

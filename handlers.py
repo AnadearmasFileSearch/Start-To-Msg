@@ -92,3 +92,15 @@ async def users(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     count = 0  # Replace with your user count logic
     await update.message.reply_text(f"Total users: {count}")
+
+# Notify Admin if User Deletes or Blocks the Bot
+async def notify_admin_user_blocked(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_name = update.message.from_user.full_name
+    user_id = update.message.from_user.id
+    notification_message = f"User {user_name} (ID: {user_id}) has blocked the bot."
+    await context.bot.send_message(
+        chat_id=ADMIN_ID,
+        text=notification_message,
+    )
+
+# You need to register a handler for the event when a user blocks or deletes the bot.

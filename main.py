@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 # Initialize the bot
 bot = Bot(token=BOT_TOKEN)
 
-# Initialize the Application object (v20.x)
+# Initialize the Application object (v20.x and above)
 application = Application.builder().token(BOT_TOKEN).build()
 
 # Register command and message handlers

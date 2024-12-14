@@ -1,6 +1,7 @@
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ChatMemberHandler
 from config import BOT_TOKEN
-from handlers import start, forward_message_to_admin, reply_to_user, broadcast, users, notify_admin_user_blocked
+from handlers import start, forward_message_to_admin, reply_to_user
+from handlers import broadcast, users, handle_user_blocked_or_deleted
 
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
@@ -11,7 +12,9 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, reply_to_user))  # Allows admin to reply to users
     app.add_handler(CommandHandler("broadcast", broadcast))
     app.add_handler(CommandHandler("users", users))
-    app.add_handler(MessageHandler(filters.StatusUpdate.MY_CHAT_MEMBER, notify_admin_user_blocked))
+
+    # Handle user blocking or deleting the bot
+    app.add_handler(ChatMemberHandler(handle_user_blocked_or_deleted, ChatMemberHandler.MY_CHAT_MEMBER))
 
     app.run_polling()
 

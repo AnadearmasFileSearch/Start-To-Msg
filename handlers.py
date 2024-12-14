@@ -102,12 +102,16 @@ async def users(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Notify admin if the user blocks or deletes the bot
 async def handle_user_blocked_or_deleted(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.message:
+    user_name = update.my_chat_member.from_user.full_name
+    user_id = update.my_chat_member.from_user.id
+    status = update.my_chat_member.new_chat_member.status
+
+    if status in ["kicked", "left"]:
+        notification_message = f"User {user_name} (ID: {user_id}) has either blocked or deleted the bot."
         try:
-            # If a user blocks the bot or the bot gets deleted, it won't be able to send messages
             await context.bot.send_message(
                 chat_id=ADMIN_ID,
-                text=f"User {update.message.from_user.full_name} (ID: {update.message.from_user.id}) has either deleted or blocked the bot."
+                text=notification_message
             )
         except Exception as e:
             logger.error(f"Error notifying admin about user blocking/deleting: {e}")

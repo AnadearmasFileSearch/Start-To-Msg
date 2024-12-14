@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: your-service-name
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python main.py"
+    plan: free
+    pythonVersion: "3.11"  # Update this to the desired Python version (e.g., "3.11", "3.10")
+    envVars:
+      - key: BOT_TOKEN
+        value: ${BOT_TOKEN}  # Securely stored in Render Environment
+      - key: WEBHOOK_URL
+        value: ${WEBHOOK_URL}  # Securely stored in Render Environment

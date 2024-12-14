@@ -1,3 +1,4 @@
+# handlers.py
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 from config import ADMIN_ID
@@ -98,7 +99,7 @@ async def notify_admin_user_blocked(update: Update, context: ContextTypes.DEFAUL
     user_id = update.my_chat_member.from_user.id
     status = update.my_chat_member.new_chat_member.status
 
-    if status == "kicked" or status == "left":
+    if status in ["kicked", "left"]:
         notification_message = f"User {user_name} (ID: {user_id}) has blocked or deleted the bot."
         await context.bot.send_message(
             chat_id=ADMIN_ID,

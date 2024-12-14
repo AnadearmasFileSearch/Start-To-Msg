@@ -1,3 +1,14 @@
-BOT_TOKEN = "7524278392:AAGeP-sVwB63C60aAig5YPNH9SX-vbYChNs"  # Replace with your bot token
-MONGO_URL = "mongodb+srv://NewFileShareBoT:EenaMeena@cluster0.7rbuejp.mongodb.net/?retryWrites=true&w=majority"  # Replace with your MongoDB connection string
-ADMIN_ID = 1490611763  # Replace with your Telegram user ID (admin only)
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env (if running locally)
+load_dotenv()
+
+# Retrieve sensitive variables from environment
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
+MONGO_URL = os.environ.get("MONGO_URL")
+ADMIN_ID = int(os.environ.get("ADMIN_ID"))  # Ensure it's an integer
+
+# Ensure all necessary variables are set
+if not BOT_TOKEN or not MONGO_URL or not ADMIN_ID:
+    raise ValueError("Missing required environment variables. Please set BOT_TOKEN, MONGO_URL, and ADMIN_ID.")

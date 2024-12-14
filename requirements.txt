@@ -1,5 +1,5 @@
-Flask==2.2.2
 python-telegram-bot[webhooks]==20.7
 pymongo[srv]==4.6.0
-python-dotenv
-requests
+python-dotenv==1.0.1
+requests  # If you need requests for webhook management or other HTTP calls
+Werkzeug  # For serving the webhook endpoint

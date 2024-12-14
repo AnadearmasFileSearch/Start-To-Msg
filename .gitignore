@@ -1,31 +1,15 @@
-# .env file containing sensitive information
-.env
-
-# Python bytecode and cache files
+# Python bytecode files
 __pycache__/
 *.pyc
 
-# Virtual environment directories
+# Virtual environment
 .venv/
-env/
-venv/
 
-# PyCharm project settings (if you're using PyCharm)
-.idea/
+# Environment variable file
+.env
 
-# Distribution / packaging files
-*.egg-info/
-dist/
-build/
+# MongoDB database files (if any)
+db.sqlite3
 
-# Logs and test results
+# Logs
 *.log
-*.coverage
-*.tox/
-*.nox/
-coverage.xml
-nosetests.xml
-
-# Other unnecessary files
-*.py,cover
-*.spec
